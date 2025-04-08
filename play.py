@@ -66,11 +66,11 @@ def create_legend():
     return legend_elements
 
 # Choose which model to run (uncomment the one you want to use)
-model_type = "DQN"  # Options: "DQN" or "PPO"
-model_path = "hospital_assistant_dqnS_model"  # Change this path as needed
+model_type = "PPO"  # Options: "DQN" or "PPO"
+model_path = "hospital_assistant_ppo_model"  # Change this path as needed
 
 # Initialize the environment
-env = HospitalAssistantEnv(grid_size=8, max_steps=100)
+env = HospitalAssistantEnv(grid_size=8, max_steps=200)
 
 # Load the trained model
 if model_type == "DQN":
@@ -131,7 +131,7 @@ buf.seek(0)
 frames.append(Image.open(buf))
 
 # Run the agent using the trained model (simulation loop)
-for step in range(100):  # Run for a maximum of 100 steps
+for step in range(200):  # Run for a maximum of 100 steps
     step_count = step + 1
     if done or truncated:
         break
@@ -200,50 +200,3 @@ env.close()
 # Close the matplotlib figure used for simulation
 plt.close(fig)
 
-# ================== Evaluation Metrics Plotting ==================
-# Now, evaluate the trained model over multiple episodes and plot evaluation metrics.
-
-num_episodes = 20
-episode_rewards = []
-episode_steps = []
-
-print("\nStarting evaluation over multiple episodes for metrics...")
-
-for ep in range(num_episodes):
-    env_eval = HospitalAssistantEnv(grid_size=8, max_steps=100)
-    observation_eval = env_eval.reset()[0]
-    total_reward_eval = 0
-    steps_eval = 0
-    done_eval = False
-    truncated_eval = False
-    
-    while not (done_eval or truncated_eval):
-        action_eval, _ = model.predict(observation_eval, deterministic=True)
-        observation_eval, reward_eval, done_eval, truncated_eval, info_eval = env_eval.step(action_eval)
-        total_reward_eval += reward_eval
-        steps_eval += 1
-        
-    episode_rewards.append(total_reward_eval)
-    episode_steps.append(steps_eval)
-    env_eval.close()
-
-# Plot the evaluation metrics
-plt.figure(figsize=(10, 4))
-
-plt.subplot(1, 2, 1)
-plt.plot(episode_rewards, marker='o')
-plt.title("Episode Rewards")
-plt.xlabel("Episode")
-plt.ylabel("Total Reward")
-
-plt.subplot(1, 2, 2)
-plt.plot(episode_steps, marker='o', color='orange')
-plt.title("Episode Lengths")
-plt.xlabel("Episode")
-plt.ylabel("Steps")
-
-plt.tight_layout()
-plt.savefig("evaluation_metrics.png")
-plt.show()
-
-print("\nEvaluation metrics saved as 'evaluation_metrics.png'.")

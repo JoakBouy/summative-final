@@ -6,7 +6,7 @@ from hospital_assistant_env import HospitalAssistantEnv
 
 # Create the environment
 def make_env():
-    return HospitalAssistantEnv(grid_size=8, max_steps=100)
+    return HospitalAssistantEnv(grid_size=8, max_steps=200)
 
 # Optional: Check if the environment follows Gymnasium's API
 check_env(make_env())
@@ -20,7 +20,7 @@ model = PPO(
     "MultiInputPolicy",  # Policy for dictionary observations
     env,
     learning_rate=3e-4,
-    n_steps=2048,        # Number of steps to run for each environment per update
+    n_steps=4096,        # Number of steps to run for each environment per update
     batch_size=64,
     n_epochs=10,         # Number of epoch when optimizing the surrogate loss
     gamma=0.99,          # Discount factor
@@ -33,7 +33,7 @@ model = PPO(
 
 # Train the model
 print("Training the PPO model...")
-model.learn(total_timesteps=300000)
+model.learn(total_timesteps=500000)
 print("PPO training complete!")
 
 # Save the model

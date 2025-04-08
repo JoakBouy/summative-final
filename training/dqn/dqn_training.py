@@ -4,7 +4,7 @@ from stable_baselines3.common.env_checker import check_env
 from hospital_assistant_env import HospitalAssistantEnv
 
 # Create the environment
-env = HospitalAssistantEnv(grid_size=8, max_steps=100)
+env = HospitalAssistantEnv(grid_size=8, max_steps=200)
 
 # Optional: Check if the environment follows Gymnasium's API
 check_env(env)
@@ -14,7 +14,7 @@ model = DQN(
     "MultiInputPolicy",  # Policy for dictionary observations
     env,
     learning_rate=1e-3,
-    buffer_size=50000,
+    buffer_size=100000,
     learning_starts=1000,
     batch_size=64,
     gamma=0.99,
@@ -28,7 +28,7 @@ model = DQN(
 
 # Train the model
 print("Training the DQN model...")
-model.learn(total_timesteps=200000)
+model.learn(total_timesteps=300000)
 print("DQN training complete!")
 
 # Save the model
